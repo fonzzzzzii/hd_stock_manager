@@ -1,19 +1,40 @@
 <?php
+/*add_new_category('Sensors','sn');
+add_new_category('Breadboards','pb');
+add_new_category('Shields','sh');
+add_new_category('LEDs','ld');
+add_new_category('Microcontrollers','mc');
+add_new_category('Switches','sw');
+add_new_category('Motors','mo');
+add_new_category('Power Supplies','ps');
+add_new_category('Communication','co');
+add_new_category('ICs','ic');
+add_new_category('Display','ds');
+add_new_category('Componenets','cm');
+add_new_category('Wires and connections','wc');
+add_new_category('Breakout','bk');
+add_new_category('Sockets and conectors','sc');
+add_new_category('Motor couplers','mk');
+add_new_category('Bearing','br');
+add_new_category('Belts and pulleys','bp');
+add_new_category('Screws & nuts','su');
+add_new_category('Heat sinks','hs');
+add_new_category('Dill bits and & end mills','dm');*/
 
-//add_new_item("1234","Super awesome","Something Interesting");
-add_new_category("Sensors","sn");
+
+
 function connect_to_database()
 {
   $mysqliLink = new mysqli("localhost","root","","hd_stock_manager");
 
   if(mysqli_connect_errno())
   {
-    echo "Not Connected<br>";
+    //echo "Not Connected<br>";
     exit();
   }
   else
   {
-    echo "Connected<br>";
+    //echo "Connected<br>";
   }
   return $mysqliLink;
 }
@@ -42,7 +63,9 @@ function add_new_item($new_sku,$new_name,$new_description)
           echo '<script language="javascript">';
           echo 'alert("The entered sku (';
           echo $new_sku;
-          echo  ') exists. Please enter a unique sku.");';
+          echo  ') exists as ';
+          echo $row["item name"];
+          echo '. Please enter a unique sku.");';
           echo '</script>';
           exit();
         }
@@ -81,7 +104,9 @@ function add_new_category($new_name,$new_initials)
           echo '<script language="javascript">';
           echo 'alert("The entered category initials (';
           echo $new_initials;
-          echo  ') exist. Please enter unique initials.");';
+          echo  ') exist as ';
+          echo $row["category name"];
+          echo '. Please enter unique initials.");';
           echo '</script>';
           exit();
         }
@@ -102,7 +127,32 @@ function add_new_category($new_name,$new_initials)
   $mysqliLink -> close();
 }
 
+function make_category_options()
+{
+  $mysqliLink = connect_to_database();
+  $sql = "SELECT `category initials`, `category name` FROM `categories` WHERE 1";
+  $result = $mysqliLink->query($sql);
+  if ($result->num_rows > 0)
+  {
+      // check if new sku is unique
+      while($row = $result->fetch_assoc())
+      {
+        echo "<option value = '";
+        echo $row["category initials"];
+        echo "'>";
+        echo $row["category initials"];
+        echo " - ";
+        echo $row["category name"];
+        echo "</option>";
+      }
 
+  }
+  else
+  {
+      echo "0 results";
+  }
+  $mysqliLink -> close();
+}
 
 
 ?>
